@@ -1,0 +1,31 @@
+# Core
+yara-python==4.3.1
+networkx==3.2.1
+jinja2==3.1.2
+
+# Firmware analysis
+uefi-firmware==1.9
+
+# Disk forensics
+pytsk3==20231007
+dfvfs==20231010
+
+# Memory analysis
+volatility3==2.5.0
+
+# Event log parsing
+python-evtx==0.7.4
+
+# Reporting
+WeasyPrint==60.2
+markdown==3.5.1
+
+# Utilities
+click==8.1.7
+rich==13.7.0
+colorama==0.4.6
+tabulate==0.9.0
+
+# Testing
+pytest==7.4.3
+pytest-cov==4.1.0
