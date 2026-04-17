@@ -86,7 +86,7 @@ class FirmwareDumper:
             return acquisition
         
         except FileNotFoundError:
-            console.print(f"[red]Error:[/red] flashrom not found — install it with: sudo apt install flashrom")
+            console.print(f"[red]Error:[/red] flashrom not found - install it with: sudo apt install flashrom")
             return None
         except subprocess.TimeoutExpired:
             console.print("[red]Error:[/red] flashrom timed out after 3 minutes.")

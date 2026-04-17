@@ -17,7 +17,7 @@ rule Unsigned_SMM_Driver
 rule Suspicious_SMM_Allocation
 {
     meta:
-        description = "Detects SMM driver attempting runtime memory allocation — common rootkit technique"
+        description = "Detects SMM driver attempting runtime memory allocation - common rootkit technique"
         severity    = "HIGH"
 
     strings:
@@ -32,7 +32,7 @@ rule Suspicious_SMM_Allocation
 rule Hidden_DXE_Driver
 {
     meta:
-        description = "DXE driver with SMM internals but no visible GUID — possible hiding technique"
+        description = "DXE driver with SMM internals but no visible GUID - possible hiding technique"
         severity    = "MEDIUM"
 
     strings:

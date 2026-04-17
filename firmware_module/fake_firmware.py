@@ -77,7 +77,7 @@ def make_test_firmware(
     """
     ffs_list = []
 
-    # Always add a PEI core — every real firmware has one
+    # Always add a PEI core - every real firmware has one
     pei_guid = bytes([
         0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01
@@ -103,7 +103,7 @@ def make_test_firmware(
 
     volume = build_firmware_volume(ffs_list)
 
-    # Pad to 1MB total — real firmware is 4-16MB but 1MB is fine for tests
+    # Pad to 1MB total - real firmware is 4-16MB but 1MB is fine for tests
     target_size = 1024 * 1024
     if len(volume) < target_size:
         volume += b"\xFF" * (target_size - len(volume))
