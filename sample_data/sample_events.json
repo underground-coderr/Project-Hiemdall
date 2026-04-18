@@ -1,0 +1,11 @@
+[
+    {"event_id": 4624, "timestamp": "2026-04-01T22:00:00", "user": "SYSTEM",    "message": "Logon success"},
+    {"event_id": 4688, "timestamp": "2026-04-01T22:05:00", "user": "SYSTEM",    "message": "Process created"},
+    {"event_id": 4688, "timestamp": "2026-04-01T22:10:00", "user": "SYSTEM",    "message": "Process created"},
+    {"event_id": 4624, "timestamp": "2026-04-01T22:15:00", "user": "SYSTEM",    "message": "Logon success"},
+    {"event_id": 4719, "timestamp": "2026-04-01T22:20:00", "user": "SYSTEM",    "message": "Audit policy changed"},
+    {"event_id": 1102, "timestamp": "2026-04-01T23:15:00", "user": "SYSTEM",    "message": "Log cleared"},
+    {"event_id": 4624, "timestamp": "2026-04-02T01:00:00", "user": "ATTACKER",  "message": "Logon success"},
+    {"event_id": 4688, "timestamp": "2026-04-02T01:02:00", "user": "ATTACKER",  "message": "Process created"},
+    {"event_id": 7045, "timestamp": "2026-04-02T01:05:00", "user": "ATTACKER",  "message": "New service installed"}
+]
