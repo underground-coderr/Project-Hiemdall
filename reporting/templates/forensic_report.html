@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTH Forensic Report - {{ case_id }}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #c9d1d9;
+            padding: 40px;
+            line-height: 1.6;
+        }
+
+        .report-header {
+            border: 1px solid #30363d;
+            padding: 30px;
+            margin-bottom: 30px;
+            background: #0d1117;
+        }
+
+        .report-title {
+            font-size: 22px;
+            color: #58a6ff;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .report-meta {
+            color: #8b949e;
+            font-size: 13px;
+            margin-top: 15px;
+        }
+
+        .report-meta span {
+            margin-right: 30px;
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            font-size: 28px;
+            font-weight: bold;
+            border: 2px solid;
+            margin-top: 15px;
+        }
+
+        .score-critical { color: #f85149; border-color: #f85149; }
+        .score-high     { color: #d29922; border-color: #d29922; }
+        .score-medium   { color: #58a6ff; border-color: #58a6ff; }
+        .score-clean    { color: #3fb950; border-color: #3fb950; }
+
+        .verdict {
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            border: 1px solid #30363d;
+            background: #0d1117;
+        }
+
+        .section-header {
+            background: #161b22;
+            padding: 12px 20px;
+            font-size: 13px;
+            letter-spacing: 1px;
+            color: #58a6ff;
+            border-bottom: 1px solid #30363d;
+            text-transform: uppercase;
+        }
+
+        .section-body {
+            padding: 20px;
+        }
+
+        .finding {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-left: 3px solid;
+            background: #161b22;
+            font-size: 13px;
+        }
+
+        .finding-CRITICAL { border-color: #f85149; }
+        .finding-HIGH     { border-color: #d29922; }
+        .finding-MEDIUM   { border-color: #58a6ff; }
+        .finding-LOW      { border-color: #3fb950; }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .badge-CRITICAL { color: #f85149; }
+        .badge-HIGH     { color: #d29922; }
+        .badge-MEDIUM   { color: #58a6ff; }
+        .badge-LOW      { color: #3fb950; }
+
+        .timeline-event {
+            display: flex;
+            gap: 20px;
+            padding: 10px 0;
+            border-bottom: 1px solid #21262d;
+            font-size: 13px;
+            align-items: flex-start;
+        }
+
+        .timeline-event:last-child { border-bottom: none; }
+
+        .timeline-ts {
+            color: #8b949e;
+            min-width: 200px;
+            font-size: 12px;
+        }
+
+        .timeline-phase {
+            min-width: 140px;
+            font-size: 11px;
+            padding: 2px 6px;
+            background: #21262d;
+            color: #58a6ff;
+            text-align: center;
+        }
+
+        .timeline-detail { flex: 1; }
+
+        .attack-chain {
+            font-family: monospace;
+            font-size: 13px;
+            color: #c9d1d9;
+            white-space: pre;
+            line-height: 2;
+        }
+
+        .phase-box {
+            display: inline-block;
+            border: 1px solid #30363d;
+            padding: 6px 16px;
+            margin: 0 5px;
+            background: #161b22;
+            color: #58a6ff;
+        }
+
+        .arrow { color: #8b949e; margin: 0 5px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: #161b22;
+            color: #8b949e;
+            padding: 8px 12px;
+            text-align: left;
+            font-weight: normal;
+            border-bottom: 1px solid #30363d;
+        }
+
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #21262d;
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        .footer {
+            margin-top: 30px;
+            padding: 15px;
+            text-align: center;
+            font-size: 11px;
+            color: #484f58;
+            border-top: 1px solid #21262d;
+        }
+
+        .no-findings {
+            color: #3fb950;
+            padding: 10px 0;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="report-header">
+    <div class="report-title">
+        ═══ PERSISTENT THREAT HUNTER - FORENSIC ANALYSIS REPORT ═══
+    </div>
+
+    <div class="report-meta">
+        <span>Case ID: <strong>{{ case_id }}</strong></span>
+        <span>Analysis Date: <strong>{{ analysis_date }}</strong></span>
+        <span>Analyst: <strong>{{ analyst }}</strong></span>
+    </div>
+
+    {% set score = confidence["confidence_score"] %}
+    {% if score >= 85 %}
+        <div class="score-badge score-critical">{{ score }}%</div>
+    {% elif score >= 65 %}
+        <div class="score-badge score-high">{{ score }}%</div>
+    {% elif score >= 40 %}
+        <div class="score-badge score-medium">{{ score }}%</div>
+    {% else %}
+        <div class="score-badge score-clean">{{ score }}%</div>
+    {% endif %}
+
+    <div class="verdict">{{ confidence["verdict"] }}</div>
+</div>
+
+<!-- FIRMWARE FINDINGS -->
+<div class="section">
+    <div class="section-header">📦 Firmware Analysis Findings</div>
+    <div class="section-body">
+        {% if firmware_findings %}
+            {% for entry in firmware_findings %}
+                {% for f in entry.findings %}
+                <div class="finding finding-{{ f.severity }}">
+                    <span class="badge badge-{{ f.severity }}">{{ f.severity }}</span>
+                    <strong>{{ f.type }}</strong> - {{ f.detail }}
+                    {% if f.rootkit %}
+                        <br><small style="color:#8b949e">Rootkit Family: {{ f.rootkit }}</small>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% endfor %}
+        {% else %}
+            <div class="no-findings">✓ No firmware threats detected</div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- ANTI-FORENSICS FINDINGS -->
+<div class="section">
+    <div class="section-header">🔍 Anti-Forensics Detection</div>
+    <div class="section-body">
+        {% if antiforensics_findings %}
+            {% for f in antiforensics_findings %}
+            <div class="finding finding-{{ f.severity }}">
+                <span class="badge badge-{{ f.severity }}">{{ f.severity }}</span>
+                <strong>{{ f.type }}</strong> - {{ f.detail }}
+                {% if f.timestamp %}
+                    <br><small style="color:#8b949e">Time: {{ f.timestamp }}</small>
+                {% endif %}
+                {% if f.gap_duration_min %}
+                    <br><small style="color:#8b949e">Gap Duration: {{ f.gap_duration_min }} minutes</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-findings">✓ No anti-forensics activity detected</div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- ATTACK TIMELINE -->
+<div class="section">
+    <div class="section-header">⏱ Reconstructed Attack Timeline</div>
+    <div class="section-body">
+        {% if timeline %}
+            {% for event in timeline %}
+            <div class="timeline-event">
+                <div class="timeline-ts">
+                    {% if event.timestamp %}
+                        {{ event.timestamp }}
+                    {% else %}
+                        Unknown time
+                    {% endif %}
+                </div>
+                <div class="timeline-phase">{{ event.attack_phase }}</div>
+                <div class="timeline-detail">
+                    <span class="badge badge-{{ event.severity }}">{{ event.severity }}</span>
+                    {{ event.finding_type }} - {{ event.detail }}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-findings">No timeline events</div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- ATTACK CHAIN -->
+<div class="section">
+    <div class="section-header">🔗 Attack Chain Visualization</div>
+    <div class="section-body">
+        {% if attack_graph.active_phases %}
+            <div style="padding: 10px 0;">
+                {% for phase in attack_graph.active_phases %}
+                    {% if phase != "unknown" %}
+                        <span class="phase-box">{{ phase.replace("_", " ").title() }}</span>
+                        {% if not loop.last %}<span class="arrow">──→</span>{% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div style="margin-top:15px;">
+                <table>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Technique</th>
+                        <th>Count</th>
+                        <th>Severity</th>
+                    </tr>
+                    {% for node in attack_graph.nodes %}
+                    <tr>
+                        <td style="color:#58a6ff">{{ node.phase }}</td>
+                        <td>{{ node.label }}</td>
+                        <td>{{ node.count }}</td>
+                        <td class="badge-{{ node.severity }}">{{ node.severity }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% else %}
+            <div class="no-findings">No attack chain detected</div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- CONFIDENCE BREAKDOWN -->
+<div class="section">
+    <div class="section-header">📊 Confidence Score Breakdown</div>
+    <div class="section-body">
+        <table>
+            <tr>
+                <th>Finding Type</th>
+                <th>Count</th>
+                <th>Severity</th>
+                <th>Weight Contribution</th>
+            </tr>
+            {% for finding_type, data in confidence.breakdown.items() %}
+            <tr>
+                <td>{{ finding_type }}</td>
+                <td>{{ data.count }}</td>
+                <td class="badge-{{ data.severity }}">{{ data.severity }}</td>
+                <td>{{ "%.3f"|format(data.total_weight) }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<div class="footer">
+    Generated by Persistent Threat Hunter v0.1 -
+    This report is for authorized forensic use only.
+    Case: {{ case_id }} | {{ analysis_date }}
+</div>
+
+</body>
+</html>
