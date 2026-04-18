@@ -158,11 +158,11 @@ Their use does not transfer any additional rights to users of this project.
 
 If you reference this project in academic work, research, or public presentations:
 
-'
+```
 Rehan Khan. "Project Heimdall — Persistent Threat Hunter:
 UEFI Rootkit & Anti-Forensics Detection Platform." 2026.
 github.com/dev-rehaann/persistent-threat-hunter
-'
+```
 
 ---
 
